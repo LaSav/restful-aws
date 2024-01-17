@@ -27,7 +27,7 @@ const createEvent = async (req, res) => {
       creatorId: creatorId,
     });
     res.status(201).json(newEvent);
-  } catch {
+  } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
