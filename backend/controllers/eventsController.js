@@ -3,9 +3,7 @@ const Event = require('../models/eventModel');
 // @desc Get Events
 // @route GET /api/events
 // @access Private
-const getEvents = (req, res) => {
-  res.json({ message: 'Get Events' });
-};
+const getEvents = async (req, res) => {};
 
 // @desc Get Group
 // @route GET /api/events/:id
@@ -19,12 +17,14 @@ const getEvent = (req, res) => {
 // @route POST /api/events
 // @access Private
 const createEvent = async (req, res) => {
+  const { name, description, deadline, availableSpaces, creatorId } = req.body;
   try {
     const newEvent = await Event.create({
-      name: 'event 1',
-      description: 'this is a description',
-      deadline: '2024-02-16',
-      availableSpaces: 3,
+      name: name,
+      description: description,
+      deadline: deadline,
+      availableSpaces: availableSpaces,
+      creatorId: creatorId,
     });
     res.status(201).json(newEvent);
   } catch {

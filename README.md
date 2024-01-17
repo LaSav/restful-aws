@@ -6,10 +6,10 @@ Making this so my friends and I can schedule a full Diplomacy game.
 
 ## Users can:
 
-- Create a group
-- Can be in multiple groups
+- Create an Event
+- Can be in multiple Events
 
-## Groups have:
+## Events have:
 
 - Title
 - Description
