@@ -15,11 +15,12 @@ app.use(express.urlencoded({ extended: false }));
 
 console.log(sequelize.models);
 
-sequelize.sync({ alter: true }).then(() => {
+sequelize.sync({ force: true }).then(() => {
   console.log('Database & tables created!');
 });
 
-app.use('/api/events', require('./routes/EventsRoutes'));
+app.use('/api/events', require('./routes/eventsRoutes'));
+app.use('/api/users', require('./routes/userRoutes'));
 
 app.use(errorHandler);
 

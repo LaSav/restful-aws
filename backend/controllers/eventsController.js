@@ -17,14 +17,14 @@ const getEvent = (req, res) => {
 // @route POST /api/events
 // @access Private
 const createEvent = async (req, res) => {
-  const { name, description, deadline, availableSpaces, creatorId } = req.body;
+  const { name, description, deadline, availableSpaces, isAdmin } = req.body;
   try {
     const newEvent = await Event.create({
       name: name,
       description: description,
       deadline: deadline,
       availableSpaces: availableSpaces,
-      creatorId: creatorId,
+      isAdmin: isAdmin,
     });
     res.status(201).json(newEvent);
   } catch (error) {
