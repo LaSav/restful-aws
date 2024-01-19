@@ -13,16 +13,15 @@ const registerUser = async (req, res) => {
     throw new Error('Please add all fields');
   }
 
-  const userExists = await User.findOne({ where: { email: email } });
-
-  if (userExists) {
-    throw new Error('User already exists');
-  }
-
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
-
   try {
+    const userExists = await User.findOne({ where: { email: email } });
+
+    if (userExists) {
+      throw new Error('User already exists');
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
     const newUser = await User.create({
       username: username,
       email: email,

@@ -1,9 +1,21 @@
 const Event = require('../models/eventModel');
+const User = require('../models/userModel');
+const { getEventsForUser } = require('../services/userService');
 
 // @desc Get Events
 // @route GET /api/events
 // @access Private
-const getEvents = async (req, res) => {};
+const getEvents = async (req, res) => {
+  // This is only for testing purposes
+  const { userId } = req.body;
+
+  try {
+    const userEvents = await getEventsForUser(userId);
+    res.json(userEvents);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 // @desc Get Group
 // @route GET /api/events/:id
@@ -17,15 +29,24 @@ const getEvent = (req, res) => {
 // @route POST /api/events
 // @access Private
 const createEvent = async (req, res) => {
-  const { name, description, deadline, availableSpaces, isAdmin } = req.body;
+  const { name, description, deadline, availableSpaces, adminId } = req.body;
+
   try {
+    const admin = await User.findByPk(adminId);
+    if (!admin) {
+      return res.status(404).json({ error: 'Admin user not found' });
+    }
     const newEvent = await Event.create({
       name: name,
       description: description,
       deadline: deadline,
       availableSpaces: availableSpaces,
-      isAdmin: isAdmin,
+      adminId: adminId,
     });
+
+    // Adds creator of event as admin in Junction table
+    await newEvent.addUser(admin, { through: { isAdmin: true } });
+
     res.status(201).json(newEvent);
   } catch (error) {
     res.status(400).json({ error: error.message });
