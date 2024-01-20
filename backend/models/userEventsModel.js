@@ -8,10 +8,18 @@ const UserEvents = sequelize.define('userEvents', {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
+  isAttending: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
 });
 
 User.belongsToMany(Event, { through: UserEvents });
 Event.belongsToMany(User, { through: UserEvents });
-Event.belongsTo(User, { as: 'admin', foreignKey: 'adminId' });
+Event.belongsTo(
+  User,
+  { as: 'admin', foreignKey: 'adminId' },
+  { as: 'attending', foreignKey: 'isAttending' }
+);
 
 module.exports = UserEvents;

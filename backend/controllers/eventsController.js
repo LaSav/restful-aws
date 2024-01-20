@@ -1,5 +1,6 @@
 const Event = require('../models/eventModel');
 const User = require('../models/userModel');
+const UserEvents = require('../models/userEventsModel');
 const { getEventsForUser } = require('../services/userService');
 
 // @desc Get Events
@@ -52,7 +53,9 @@ const createEvent = async (req, res) => {
     });
 
     // Adds creator of event as admin in userEvents junction table
-    await newEvent.addUser(admin, { through: { isAdmin: true } });
+    await newEvent.addUser(admin, {
+      through: { isAdmin: true, isAttending: true },
+    });
 
     // Adds invited Users from body request to userEvents junction table
     if (invitedUsernames && invitedUsernames.length > 0) {
@@ -68,11 +71,37 @@ const createEvent = async (req, res) => {
 };
 
 // @desc Update Event
+// @route PUT /api/events/:id/attend
+// @access Private
+const updateEvent = async (req, res) => {
+  const { userId } = req.body;
+  // Attend Event
+  // Check if you are member of event
+  // Attend function
+  try {
+    const user = await User.findByPk(userId);
+    const event = await Event.findByPk(req.params.id);
+    const isMember = await event.hasUser(user);
+
+    if (!user || !event || !isMember) {
+      return res.status(404).json({ error: 'User or event not found' });
+    }
+    await UserEvents.update(
+      { isAttending: true },
+      { where: { userId: user.id, eventId: event.id } }
+    );
+    res.status(201).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+// @desc Admin Update Event
 // @route PUT /api/events/:id
 // @access Private
-const updateEvent = (req, res) => {
-  res.json({ message: 'Update Event' });
-};
+
+const adminUpdateEvent = async (req, res) => {};
 
 // @desc Delete Event
 // @route DELETE /api/events/:id
