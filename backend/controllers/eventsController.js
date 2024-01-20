@@ -29,7 +29,14 @@ const getEvent = (req, res) => {
 // @route POST /api/events
 // @access Private
 const createEvent = async (req, res) => {
-  const { name, description, deadline, availableSpaces, adminId } = req.body;
+  const {
+    name,
+    description,
+    deadline,
+    availableSpaces,
+    adminId,
+    invitedUsernames,
+  } = req.body;
 
   try {
     const admin = await User.findByPk(adminId);
@@ -44,9 +51,16 @@ const createEvent = async (req, res) => {
       adminId: adminId,
     });
 
-    // Adds creator of event as admin in Junction table
+    // Adds creator of event as admin in userEvents junction table
     await newEvent.addUser(admin, { through: { isAdmin: true } });
 
+    // Adds invited Users from body request to userEvents junction table
+    if (invitedUsernames && invitedUsernames.length > 0) {
+      const invitedUsers = await User.findAll({
+        where: { username: invitedUsernames },
+      });
+      await newEvent.addUsers(invitedUsers);
+    }
     res.status(201).json(newEvent);
   } catch (error) {
     res.status(400).json({ error: error.message });

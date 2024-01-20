@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: false }));
 
 console.log(sequelize.models);
 
-sequelize.sync({ alter: true }).then(() => {
+sequelize.sync({ force: true }).then(() => {
   console.log('Database & tables created!');
 });
 
