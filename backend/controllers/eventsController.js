@@ -3,11 +3,14 @@ const User = require('../models/userModel');
 const UserEvents = require('../models/userEventsModel');
 const { getEventsForUser } = require('../services/userService');
 
+// -- General Functions --
+
+// -- userId will be retrieved from req.user.id in authmiddleware, hardcoding userId from req.body for now. --
+
 // @desc Get Events
 // @route GET /api/events
 // @access Private
 const getEvents = async (req, res) => {
-  // This is only for testing purposes
   const { userId } = req.body;
 
   try {
@@ -23,6 +26,7 @@ const getEvents = async (req, res) => {
 // @access Private
 
 const getEvent = (req, res) => {
+  // Gets all details of event: current members, attendees, admin information etc.
   res.json({ message: 'Get Event' });
 };
 
@@ -35,25 +39,26 @@ const createEvent = async (req, res) => {
     description,
     deadline,
     availableSpaces,
-    adminId,
+    userId,
     invitedUsernames,
   } = req.body;
 
   try {
-    const admin = await User.findByPk(adminId);
-    if (!admin) {
-      return res.status(404).json({ error: 'Admin user not found' });
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
     }
+
     const newEvent = await Event.create({
       name: name,
       description: description,
       deadline: deadline,
       availableSpaces: availableSpaces,
-      adminId: adminId,
+      adminId: userId,
     });
 
     // Adds creator of event as admin in userEvents junction table
-    await newEvent.addUser(admin, {
+    await newEvent.addUser(user, {
       through: { isAdmin: true, isAttending: true },
     });
 
@@ -75,9 +80,6 @@ const createEvent = async (req, res) => {
 // @access Private
 const updateEvent = async (req, res) => {
   const { userId } = req.body;
-  // Attend Event
-  // Check if you are member of event
-  // Attend function
   try {
     const user = await User.findByPk(userId);
     const event = await Event.findByPk(req.params.id);
@@ -97,11 +99,40 @@ const updateEvent = async (req, res) => {
   }
 };
 
+// -- ADMIN FUNCTIONS --
+
 // @desc Admin Update Event
 // @route PUT /api/events/:id
 // @access Private
+const adminUpdateEvent = async (req, res) => {
+  const { name, description, deadline, availableSpaces, userId } = req.body;
+  try {
+    const user = await User.findByPk(userId);
+    const event = await Event.findByPk(req.params.id);
+    const admin = await event.getAdmin();
 
-const adminUpdateEvent = async (req, res) => {};
+    if (!user || !event) {
+      return res.status(404).json({ error: 'User or event not found' });
+    }
+
+    if (admin.id === user.id) {
+      event.update({
+        name: name,
+        description: description,
+        deadline: deadline,
+        availableSpaces: availableSpaces,
+      });
+      res.status(201).json(event);
+    } else {
+      return res
+        .status(401)
+        .json({ error: 'You must be the admin to make these changes' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 // @desc Delete Event
 // @route DELETE /api/events/:id
@@ -110,4 +141,11 @@ const deleteEvent = (req, res) => {
   res.json({ message: 'Delete Event' });
 };
 
-module.exports = { getEvents, getEvent, createEvent, updateEvent, deleteEvent };
+module.exports = {
+  getEvents,
+  getEvent,
+  createEvent,
+  updateEvent,
+  adminUpdateEvent,
+  deleteEvent,
+};
