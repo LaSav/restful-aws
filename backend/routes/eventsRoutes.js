@@ -14,4 +14,6 @@ router.route('/').get(getEvents).post(createEvent);
 
 router.route('/:id').get(getEvent).put(adminUpdateEvent).delete(deleteEvent);
 
+router.route('/:id/attend').put(updateEvent);
+
 module.exports = router;

@@ -25,9 +25,43 @@ const getEvents = async (req, res) => {
 // @route GET /api/events/:id
 // @access Private
 
-const getEvent = (req, res) => {
+const getEvent = async (req, res) => {
   // Gets all details of event: current members, attendees, admin information etc.
-  res.json({ message: 'Get Event' });
+  const { userId } = req.body;
+  try {
+    const user = await User.findByPk(userId);
+    const event = await Event.findByPk(req.params.id);
+    const isMember = await event.hasUser(user);
+
+    if (!user || !event || !isMember) {
+      return res.status(404).json({ error: 'User or event not found' });
+    }
+
+    if (isMember) {
+      const eventUsers = await event.getUsers();
+      const admin = await event.getAdmin();
+      const attendees = await event.getUsers({
+        attributes: ['username'],
+        through: { where: { isAttending: true } },
+      });
+
+      const eventDetails = {
+        name: event.name,
+        description: event.description,
+        deadline: event.deadline,
+        availableSpaces: event.availableSpaces,
+        admin: admin.username,
+        members: eventUsers.map((user) => user.username),
+        attendees: attendees.map((user) => user.username),
+      };
+      res.json(eventDetails);
+    } else {
+      res.status(401).json({ error: 'You are not a member of this group' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
 // @desc Create Event
@@ -62,7 +96,7 @@ const createEvent = async (req, res) => {
       through: { isAdmin: true, isAttending: true },
     });
 
-    // Adds invited Users from body request to userEvents junction table
+    // Adds invited Users from request body to userEvents junction table
     if (invitedUsernames && invitedUsernames.length > 0) {
       const invitedUsers = await User.findAll({
         where: { username: invitedUsernames },
@@ -137,9 +171,33 @@ const adminUpdateEvent = async (req, res) => {
 // @desc Delete Event
 // @route DELETE /api/events/:id
 // @access Private
-const deleteEvent = (req, res) => {
-  res.json({ message: 'Delete Event' });
+const deleteEvent = async (req, res) => {
+  const { userId } = req.body;
+
+  try {
+    const user = await User.findByPk(userId);
+    const event = await Event.findByPk(req.params.id);
+    const admin = await event.getAdmin();
+
+    if (!user || !event) {
+      return res.status(404).json({ error: 'User or event not found' });
+    }
+
+    if (admin.id === user.id) {
+      event.destroy();
+      res.status(201).json(event.id);
+    } else {
+      return res
+        .status(401)
+        .json({ error: 'You must be the admin to make these changes' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
+
+// @desc Add/ Remove users
 
 module.exports = {
   getEvents,
