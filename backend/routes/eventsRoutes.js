@@ -3,19 +3,25 @@ const {
   getEvents,
   getEvent,
   createEvent,
-  updateEvent,
+  attendEvent,
   adminUpdateEvent,
   deleteEvent,
+  inviteUsersToEvent,
 } = require('../controllers/eventsController');
 
 const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.route('/').get(protect, getEvents).post(createEvent);
+router.route('/').get(protect, getEvents).post(protect, createEvent);
 
-router.route('/:id').get(getEvent).put(adminUpdateEvent).delete(deleteEvent);
+router
+  .route('/:id')
+  .get(protect, getEvent)
+  .put(protect, adminUpdateEvent)
+  .delete(protect, deleteEvent);
 
-router.route('/:id/attend').put(updateEvent);
+router.route('/:id/attend').put(protect, attendEvent);
+router.route('/:id/invite').put(protect, inviteUsersToEvent);
 
 module.exports = router;

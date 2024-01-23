@@ -11,8 +11,7 @@ const { getEventsForUser } = require('../services/userService');
 // @route GET /api/events
 // @access Private
 const getEvents = async (req, res) => {
-  console.log(req.user);
-  const { userId } = req.body;
+  const userId = req.user.id;
 
   try {
     const userEvents = await getEventsForUser(userId);
@@ -27,8 +26,7 @@ const getEvents = async (req, res) => {
 // @access Private
 
 const getEvent = async (req, res) => {
-  // Gets all details of event: current members, attendees, admin information etc.
-  const { userId } = req.body;
+  const userId = req.user.id;
   try {
     const user = await User.findByPk(userId);
     const event = await Event.findByPk(req.params.id);
@@ -69,14 +67,10 @@ const getEvent = async (req, res) => {
 // @route POST /api/events
 // @access Private
 const createEvent = async (req, res) => {
-  const {
-    name,
-    description,
-    deadline,
-    availableSpaces,
-    userId,
-    invitedUsernames,
-  } = req.body;
+  const { name, description, deadline, availableSpaces, invitedUsernames } =
+    req.body;
+
+  const userId = req.user.id;
 
   try {
     const user = await User.findByPk(userId);
@@ -110,11 +104,11 @@ const createEvent = async (req, res) => {
   }
 };
 
-// @desc Update Event
+// @desc attend an Event
 // @route PUT /api/events/:id/attend
 // @access Private
-const updateEvent = async (req, res) => {
-  const { userId } = req.body;
+const attendEvent = async (req, res) => {
+  const userId = req.user.id;
   try {
     const user = await User.findByPk(userId);
     const event = await Event.findByPk(req.params.id);
@@ -127,7 +121,46 @@ const updateEvent = async (req, res) => {
       { isAttending: true },
       { where: { userId: user.id, eventId: event.id } }
     );
-    res.status(201).json(user);
+    res.status(201).json({
+      message: `You've been marked as attending this event for ${event.deadline}`,
+      updatedEvent: {
+        id: event.id,
+        name: event.name,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+// @desc Invite a User to an event
+// @route PUT /api/events/:id/invite
+// @access Private
+
+// Need to validate usernames before adding
+
+const inviteUsersToEvent = async (req, res) => {
+  const { invitedUsernames } = req.body;
+  const userId = req.user.id;
+  try {
+    const user = await User.findByPk(userId);
+    const event = await Event.findByPk(req.params.id);
+    const admin = await event.getAdmin();
+
+    if (!user || !event) {
+      return res.status(404).json({ error: 'User or event not found' });
+    }
+
+    if (admin.id === user.id) {
+      if (invitedUsernames && invitedUsernames.length > 0) {
+        const invitedUsers = await User.findAll({
+          where: { username: invitedUsernames },
+        });
+        await event.addUsers(invitedUsers);
+      }
+    }
+    res.json(event);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -140,7 +173,8 @@ const updateEvent = async (req, res) => {
 // @route PUT /api/events/:id
 // @access Private
 const adminUpdateEvent = async (req, res) => {
-  const { name, description, deadline, availableSpaces, userId } = req.body;
+  const { name, description, deadline, availableSpaces } = req.body;
+  const userId = req.user.id;
   try {
     const user = await User.findByPk(userId);
     const event = await Event.findByPk(req.params.id);
@@ -173,7 +207,7 @@ const adminUpdateEvent = async (req, res) => {
 // @route DELETE /api/events/:id
 // @access Private
 const deleteEvent = async (req, res) => {
-  const { userId } = req.body;
+  const userId = req.user.id;
 
   try {
     const user = await User.findByPk(userId);
@@ -204,7 +238,8 @@ module.exports = {
   getEvents,
   getEvent,
   createEvent,
-  updateEvent,
+  attendEvent,
+  inviteUsersToEvent,
   adminUpdateEvent,
   deleteEvent,
 };
