@@ -11,6 +11,7 @@ const { getEventsForUser } = require('../services/userService');
 // @route GET /api/events
 // @access Private
 const getEvents = async (req, res) => {
+  console.log(req.user);
   const { userId } = req.body;
 
   try {

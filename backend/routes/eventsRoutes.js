@@ -8,9 +8,11 @@ const {
   deleteEvent,
 } = require('../controllers/eventsController');
 
+const { protect } = require('../middleware/authMiddleware');
+
 const router = express.Router();
 
-router.route('/').get(getEvents).post(createEvent);
+router.route('/').get(protect, getEvents).post(createEvent);
 
 router.route('/:id').get(getEvent).put(adminUpdateEvent).delete(deleteEvent);
 
