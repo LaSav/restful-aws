@@ -1,11 +1,11 @@
+//TODO: RemoveUsersFromEvent, LeaveEvent, check for existing users in inviteUsersToEvent, admin middleware
+
 const Event = require('../models/eventModel');
 const User = require('../models/userModel');
 const UserEvents = require('../models/userEventsModel');
 const { getEventsForUser } = require('../services/userService');
 
 // -- General Functions --
-
-// -- userId will be retrieved from req.user.id in authmiddleware, hardcoding userId from req.body for now. --
 
 // @desc Get Events
 // @route GET /api/events
@@ -134,39 +134,6 @@ const attendEvent = async (req, res) => {
   }
 };
 
-// @desc Invite a User to an event
-// @route PUT /api/events/:id/invite
-// @access Private
-
-// Need to validate usernames before adding
-
-const inviteUsersToEvent = async (req, res) => {
-  const { invitedUsernames } = req.body;
-  const userId = req.user.id;
-  try {
-    const user = await User.findByPk(userId);
-    const event = await Event.findByPk(req.params.id);
-    const admin = await event.getAdmin();
-
-    if (!user || !event) {
-      return res.status(404).json({ error: 'User or event not found' });
-    }
-
-    if (admin.id === user.id) {
-      if (invitedUsernames && invitedUsernames.length > 0) {
-        const invitedUsers = await User.findAll({
-          where: { username: invitedUsernames },
-        });
-        await event.addUsers(invitedUsers);
-      }
-    }
-    res.json(event);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-
 // -- ADMIN FUNCTIONS --
 
 // @desc Admin Update Event
@@ -203,6 +170,39 @@ const adminUpdateEvent = async (req, res) => {
   }
 };
 
+// @desc Invite a User to an event
+// @route PUT /api/events/:id/invite
+// @access Private
+
+// Need to validate usernames before adding
+
+const inviteUsersToEvent = async (req, res) => {
+  const { invitedUsernames } = req.body;
+  const userId = req.user.id;
+  try {
+    const user = await User.findByPk(userId);
+    const event = await Event.findByPk(req.params.id);
+    const admin = await event.getAdmin();
+
+    if (!user || !event) {
+      return res.status(404).json({ error: 'User or event not found' });
+    }
+
+    if (admin.id === user.id) {
+      if (invitedUsernames && invitedUsernames.length > 0) {
+        const invitedUsers = await User.findAll({
+          where: { username: invitedUsernames },
+        });
+        await event.addUsers(invitedUsers);
+      }
+    }
+    res.json(event);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 // @desc Delete Event
 // @route DELETE /api/events/:id
 // @access Private
@@ -231,8 +231,6 @@ const deleteEvent = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
-// @desc Add/ Remove users
 
 module.exports = {
   getEvents,

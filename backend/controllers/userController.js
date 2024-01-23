@@ -10,15 +10,14 @@ const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
-    res.status(400);
-    throw new Error('Please add all fields');
+    res.status(400).json({ error: 'Please add all fields' });
   }
 
   try {
     const userExists = await User.findOne({ where: { email: email } });
 
     if (userExists) {
-      throw new Error('User already exists');
+      res.status(400).json({ error: 'User already exists' });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -45,6 +44,26 @@ const registerUser = async (req, res) => {
   }
 };
 
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ where: { email: email } });
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+      res.json({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        token: generateToken(user.id),
+      });
+    } else {
+      res.status(400).json({ error: 'Invalid credentials' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 // Generate JWT
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -52,4 +71,4 @@ const generateToken = (id) => {
   });
 };
 
-module.exports = { registerUser };
+module.exports = { registerUser, loginUser };
