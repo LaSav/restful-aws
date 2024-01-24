@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { errorHandler } = require('./middleware/errorMiddleware');
-
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const sequelize = require('./config/db');
 
 require('./models/userModel');
@@ -11,6 +11,7 @@ require('./models/userEventsModel');
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
 console.log(sequelize.models);

@@ -33,7 +33,7 @@ const registerUser = async (req, res) => {
         id: user.id,
         name: user.name,
         email: user.email,
-        token: generateToken(user.id),
+        token: generateToken(user.id, res),
       });
     } else {
       res.status(400).json({ error: 'Invalid user data' });
@@ -54,7 +54,7 @@ const loginUser = async (req, res) => {
         id: user.id,
         username: user.username,
         email: user.email,
-        token: generateToken(user.id),
+        token: generateToken(user.id, res),
       });
     } else {
       res.status(400).json({ error: 'Invalid credentials' });
@@ -65,10 +65,21 @@ const loginUser = async (req, res) => {
   }
 };
 // Generate JWT
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+const generateToken = (id, res) => {
+  const token = jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: '30d',
   });
+
+  res.cookie('token', token, {
+    httpOnly: true,
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+  });
+  return token;
 };
 
-module.exports = { registerUser, loginUser };
+const logoutUser = async (req, res) => {
+  res.clearCookie('token');
+  res.json({ message: 'Logout successful' });
+};
+
+module.exports = { registerUser, loginUser, logoutUser };

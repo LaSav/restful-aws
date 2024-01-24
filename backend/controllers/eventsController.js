@@ -12,7 +12,6 @@ const { getEventsForUser } = require('../services/userService');
 // @access Private
 const getEvents = async (req, res) => {
   const userId = req.user.id;
-
   try {
     const userEvents = await getEventsForUser(userId);
     res.json(userEvents);
@@ -69,9 +68,7 @@ const getEvent = async (req, res) => {
 const createEvent = async (req, res) => {
   const { name, description, deadline, availableSpaces, invitedUsernames } =
     req.body;
-
   const userId = req.user.id;
-
   try {
     const user = await User.findByPk(userId);
     if (!user) {
@@ -173,8 +170,6 @@ const adminUpdateEvent = async (req, res) => {
 // @desc Invite a User to an event
 // @route PUT /api/events/:id/invite
 // @access Private
-
-// Need to validate usernames before adding
 
 const inviteUsersToEvent = async (req, res) => {
   const { invitedUsernames } = req.body;
