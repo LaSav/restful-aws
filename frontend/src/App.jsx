@@ -1,9 +1,16 @@
-function App() {
+import { Container } from 'react-bootstrap';
+import { Outlet } from 'react-router-dom';
+import Header from './components/Header';
+
+const App = () => {
   return (
     <>
-      <h1>Fill App</h1>
+      <Header />
+      <Container className='my-2'>
+        <Outlet />
+      </Container>
     </>
   );
-}
+};
 
 export default App;
