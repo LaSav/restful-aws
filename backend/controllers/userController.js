@@ -1,3 +1,6 @@
+// Duplication bug in registerUser being fixed with
+// return statement in if (userExists) block
+
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
@@ -17,7 +20,7 @@ const registerUser = async (req, res) => {
     const userExists = await User.findOne({ where: { email: email } });
 
     if (userExists) {
-      res.status(400).json({ error: 'User already exists' });
+      return res.status(400).json({ error: 'User already exists' });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -31,7 +34,7 @@ const registerUser = async (req, res) => {
     if (user) {
       res.status(201).json({
         id: user.id,
-        name: user.name,
+        username: user.username,
         email: user.email,
         token: generateToken(user.id, res),
       });

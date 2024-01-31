@@ -5,6 +5,8 @@ import FormContainer from '../components/FormContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLoginMutation } from '../slices/usersApiSlice';
 import { setCredentials } from '../slices/authSlice';
+import { toast } from 'react-toastify';
+import Loader from '../components/Loader';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -29,8 +31,8 @@ const LoginScreen = () => {
       const res = await login({ email, password }).unwrap();
       dispatch(setCredentials({ ...res }));
       navigate('/');
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      toast.error(err?.data?.error || err.error);
     }
   };
 
@@ -69,7 +71,7 @@ const LoginScreen = () => {
         </Button>
       </Form>
 
-      {isLoading && <p>Loading...</p>}
+      {isLoading && <Loader />}
 
       <Row className='py-3'>
         <Col>
