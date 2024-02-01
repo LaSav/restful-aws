@@ -16,6 +16,7 @@ import DashboardScreen from './screens/DashboardScreen.jsx';
 import store from './store.js';
 import { Provider } from 'react-redux';
 import PrivateRoute from './components/PrivateRoute.jsx';
+import CreateEventScreen from './screens/CreateEventScreen.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -26,6 +27,9 @@ const router = createBrowserRouter(
       {/* Private Routes */}
       <Route path='' element={<PrivateRoute />}>
         <Route path='/dashboard' element={<DashboardScreen />} />
+      </Route>
+      <Route path='' element={<PrivateRoute />}>
+        <Route path='/create' element={<CreateEventScreen />} />
       </Route>
     </Route>
   )
