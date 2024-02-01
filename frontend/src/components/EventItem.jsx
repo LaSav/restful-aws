@@ -2,7 +2,7 @@ import { Card, ListGroup } from 'react-bootstrap';
 
 function EventItem({ event }) {
   return (
-    <Card className='d-flex flex-column bg-light w-50'>
+    <Card className='bg-light w-50'>
       <Card.Body>
         <Card.Title>{event.name}</Card.Title>
         <Card.Subtitle>{event.deadline}</Card.Subtitle>

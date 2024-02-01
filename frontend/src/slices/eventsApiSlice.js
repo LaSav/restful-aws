@@ -10,7 +10,14 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    createEvent: builder.mutation({
+      query: (data) => ({
+        url: `${EVENTS_URL}/`,
+        method: 'POST',
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useFetchEventsQuery } = eventsApiSlice;
+export const { useFetchEventsQuery, useCreateEventMutation } = eventsApiSlice;

@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+// Do I really need userEvents in global state?
+// Update state in eventsList after event creation
+
+import { useEffect } from 'react';
 import { Button, Container, Row, Col, Stack } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
@@ -25,29 +27,34 @@ const DashboardScreen = () => {
     }
   }, [dispatch, events, error]);
 
+  let eventsList;
   if (isLoading) {
-    return <Loader />;
+    eventsList = <Loader />;
+  } else if (error) {
+    eventsList = <div>Error Loading Events</div>;
+  } else {
+    eventsList = events.map((event) => {
+      return <EventItem key={event.id} event={event} />;
+    });
   }
 
-  const eventsList = events.map((event) => {
-    return <EventItem key={event.id} event={event} />;
-  });
-
   return (
-    <div className='py-5'>
-      <Container>
-        <Row className='justify-content-end'>
-          <Col className='pb-4'>
-            <LinkContainer to='/create'>
-              <Button type='submit' variant='primary' className='mt-3'>
-                Create Event
-              </Button>
-            </LinkContainer>
-          </Col>
-        </Row>
-        <Stack gap={3}>{eventsList}</Stack>
-      </Container>
-    </div>
+    <Container>
+      <Row>
+        <Col className='pb-4 justify-content-end'>
+          <LinkContainer to='/create'>
+            <Button type='submit' variant='primary' className='mt-3'>
+              Create Event
+            </Button>
+          </LinkContainer>
+        </Col>
+      </Row>
+      <Row>
+        <Stack className='mx-auto' gap={3}>
+          {eventsList}
+        </Stack>
+      </Row>
+    </Container>
   );
 };
 
