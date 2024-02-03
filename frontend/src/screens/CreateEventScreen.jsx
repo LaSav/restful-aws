@@ -1,12 +1,11 @@
 // Add multiple usernames option to form input
+// Form Validation
 
 import { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import FormContainer from '../components/FormContainer';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { useCreateEventMutation } from '../slices/eventsApiSlice';
-import { setCreatedEvent } from '../slices/eventsSlice';
 import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
 
@@ -17,12 +16,9 @@ function CreateEventScreen() {
   const [availableSpaces, setAvailableSpaces] = useState('');
   const [invitedUsernames, setInvitedUsernames] = useState([]);
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [createEvent, { isLoading }] = useCreateEventMutation();
-
-  const { createdEvent } = useSelector((state) => state.events);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -35,7 +31,6 @@ function CreateEventScreen() {
         availableSpaces,
         invitedUsernames,
       }).unwrap();
-      dispatch(setCreatedEvent({ ...res }));
       navigate('/dashboard');
     } catch (err) {
       toast.error(err?.data?.error || err.error);

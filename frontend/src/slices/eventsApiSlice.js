@@ -9,6 +9,8 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
         method: 'GET',
         body: data,
       }),
+      transformResponse: (res) => res.sort((a, b) => b.id - a.id),
+      providesTags: ['Events'],
     }),
     createEvent: builder.mutation({
       query: (data) => ({
@@ -16,6 +18,7 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
         body: data,
       }),
+      invalidatesTags: ['Events'],
     }),
   }),
 });

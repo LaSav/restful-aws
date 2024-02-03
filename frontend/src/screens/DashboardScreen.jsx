@@ -1,31 +1,17 @@
 // Do I really need userEvents in global state?
 // Update state in eventsList after event creation
 
-import { useEffect } from 'react';
 import { Button, Container, Row, Col, Stack } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
 import { useFetchEventsQuery } from '../slices/eventsApiSlice';
-import { setUserEvents } from '../slices/eventsSlice';
 import EventItem from '../components/EventItem';
 
 const DashboardScreen = () => {
   console.log('Dashboard screen rendering');
-  const dispatch = useDispatch();
-  // const navigate = useNavigate();
 
   const { data: events, error, isLoading } = useFetchEventsQuery();
-  const { userEvents } = useSelector((state) => state.events);
-
-  console.log(userEvents);
-
-  useEffect(() => {
-    if (!error) {
-      dispatch(setUserEvents(events));
-    }
-  }, [dispatch, events, error]);
 
   let eventsList;
   if (isLoading) {
