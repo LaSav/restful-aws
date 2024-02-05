@@ -1,5 +1,7 @@
 // Add multiple usernames option to form input
 // Form Validation
+// Date must be a future possible value,
+// Available Spaces must be positive number
 
 import { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
@@ -37,6 +39,10 @@ function CreateEventScreen() {
     }
   };
 
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
     <FormContainer>
       <h1>Create an Event</h1>
@@ -45,6 +51,7 @@ function CreateEventScreen() {
           <Form.Label>Name</Form.Label>
           <Form.Control
             type='name'
+            required
             placeholder='Name of Event'
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -55,6 +62,7 @@ function CreateEventScreen() {
           <Form.Label>Description</Form.Label>
           <Form.Control
             type='text'
+            required
             placeholder='Enter a short description'
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -67,6 +75,7 @@ function CreateEventScreen() {
           <Form.Label>Set a Date</Form.Label>
           <Form.Control
             type='date'
+            required
             placeholder='Choose a Date'
             value={deadline}
             onChange={(e) => setDeadline(e.target.value)}
@@ -76,7 +85,8 @@ function CreateEventScreen() {
           <Form.Label>Set Available Spaces</Form.Label>
           <Form.Control
             type='number'
-            placeholder='1'
+            required
+            min={1}
             value={availableSpaces}
             onChange={(e) => setAvailableSpaces(e.target.value)}
           ></Form.Control>
@@ -85,7 +95,8 @@ function CreateEventScreen() {
           <Form.Label>Invite Users</Form.Label>
           <Form.Control
             type='text'
-            placeholder='Enter Usernames'
+            required
+            placeholder='Enter Usernames seperated by a comma: savva,luna,iceberg'
             value={invitedUsernames}
             onChange={(e) => setInvitedUsernames(e.target.value)}
           ></Form.Control>

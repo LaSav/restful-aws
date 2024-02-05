@@ -69,10 +69,35 @@ const createEvent = async (req, res) => {
   const { name, description, deadline, availableSpaces, invitedUsernames } =
     req.body;
   const userId = req.user.id;
+
+  if (!name || !description || !deadline || !availableSpaces) {
+    res.status(400).json({ error: 'Please add all fields' });
+  }
+
   try {
     const user = await User.findByPk(userId);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Check deadline hasn't passed
+    const today = new Date();
+    const eventDeadline = new Date(deadline);
+    today.setHours(0, 0, 0, 0);
+    eventDeadline.setHours(0, 0, 0, 0);
+
+    if (eventDeadline < today) {
+      return res
+        .status(400)
+        .json({ error: 'Deadline must be greater than or equal to today' });
+    }
+
+    // Check available spaces is positive number
+
+    if (Math.sign(availableSpaces) < 1) {
+      return res
+        .status(400)
+        .json({ error: 'Availabile spaces must be greater than 0' });
     }
 
     const newEvent = await Event.create({
@@ -88,10 +113,12 @@ const createEvent = async (req, res) => {
       through: { isAdmin: true, isAttending: true },
     });
 
+    const invitedUsernamesArray = invitedUsernames.split(',');
+
     // Adds invited Users from request body to userEvents junction table
-    if (invitedUsernames && invitedUsernames.length > 0) {
+    if (invitedUsernamesArray && invitedUsernamesArray.length > 0) {
       const invitedUsers = await User.findAll({
-        where: { username: invitedUsernames },
+        where: { username: invitedUsernamesArray },
       });
       await newEvent.addUsers(invitedUsers);
     }

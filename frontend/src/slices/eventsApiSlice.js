@@ -4,11 +4,7 @@ const EVENTS_URL = '/api/events';
 export const eventsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     fetchEvents: builder.query({
-      query: (data) => ({
-        url: `${EVENTS_URL}/`,
-        method: 'GET',
-        body: data,
-      }),
+      query: () => `${EVENTS_URL}/`,
       transformResponse: (res) => res.sort((a, b) => b.id - a.id),
       providesTags: ['Events'],
     }),

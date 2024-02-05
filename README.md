@@ -17,3 +17,13 @@ Making this so my friends and I can schedule a full Diplomacy game.
 - Members
 - Deadline
 - Available Spaces
+
+## Future Features:
+
+- User 'Friends'
+- Invite users by email or phone number.
+- Create events with recurring dates by days of the week.
+
+## Bugs:
+
+- On sign in with new user, receiving old users data until refresh.
