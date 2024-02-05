@@ -25,5 +25,3 @@ Making this so my friends and I can schedule a full Diplomacy game.
 - Create events with recurring dates by days of the week.
 
 ## Bugs:
-
-- On sign in with new user, receiving old users data until refresh.

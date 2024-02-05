@@ -9,7 +9,6 @@ export const userApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: ['Events'],
     }),
     logout: builder.mutation({
       query: () => ({
