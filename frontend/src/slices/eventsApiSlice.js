@@ -16,7 +16,14 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Events'],
     }),
+    fetchEvent: builder.query({
+      query: (id) => `${EVENTS_URL}/${id}`,
+    }),
   }),
 });
 
-export const { useFetchEventsQuery, useCreateEventMutation } = eventsApiSlice;
+export const {
+  useFetchEventsQuery,
+  useCreateEventMutation,
+  useFetchEventQuery,
+} = eventsApiSlice;

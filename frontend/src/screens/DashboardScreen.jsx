@@ -1,6 +1,3 @@
-// Do I really need userEvents in global state?
-// Update state in eventsList after event creation
-
 import { Button, Container, Row, Col, Stack } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { toast } from 'react-toastify';

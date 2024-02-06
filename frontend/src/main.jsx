@@ -17,6 +17,7 @@ import store from './store.js';
 import { Provider } from 'react-redux';
 import PrivateRoute from './components/PrivateRoute.jsx';
 import CreateEventScreen from './screens/CreateEventScreen.jsx';
+import ShowEventScreen from './screens/ShowEventScreen.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,6 +31,9 @@ const router = createBrowserRouter(
       </Route>
       <Route path='' element={<PrivateRoute />}>
         <Route path='/create' element={<CreateEventScreen />} />
+      </Route>
+      <Route path='' element={<PrivateRoute />}>
+        <Route path='/events/:eventId' element={<ShowEventScreen />} />
       </Route>
     </Route>
   )

@@ -44,6 +44,7 @@ const getEvent = async (req, res) => {
       });
 
       const eventDetails = {
+        id: event.id,
         name: event.name,
         description: event.description,
         deadline: event.deadline,
