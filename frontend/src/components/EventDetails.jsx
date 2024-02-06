@@ -1,4 +1,4 @@
-import { Card, ListGroup } from 'react-bootstrap';
+import { Card, ListGroup, Button } from 'react-bootstrap';
 
 function EventDetails({ event }) {
   console.log(event.members);
@@ -11,7 +11,7 @@ function EventDetails({ event }) {
   });
 
   return (
-    <Card className='bg-light w-50'>
+    <Card className='d-flex bg-light w-50 align-items-center py-4'>
       <Card.Body>
         <Card.Title>{event.name}</Card.Title>
         <Card.Subtitle>Deadline: {event.deadline}</Card.Subtitle>
@@ -29,6 +29,14 @@ function EventDetails({ event }) {
           {membersList}
         </ListGroup>
       </Card.Body>
+      <div className='d-flex'>
+        {event.isAdmin ? <Button className='me-3'>Edit</Button> : null}
+        {event.isAttending ? (
+          <Button>Un-attend</Button>
+        ) : (
+          <Button>Attend</Button>
+        )}
+      </div>
     </Card>
   );
 }

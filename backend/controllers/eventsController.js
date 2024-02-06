@@ -29,6 +29,9 @@ const getEvent = async (req, res) => {
   try {
     const user = await User.findByPk(userId);
     const event = await Event.findByPk(req.params.id);
+    const userEvent = await UserEvents.findOne({
+      where: { userId: userId, eventId: req.params.id },
+    });
     const isMember = await event.hasUser(user);
 
     if (!user || !event || !isMember) {
@@ -52,6 +55,8 @@ const getEvent = async (req, res) => {
         admin: admin.username,
         members: eventUsers.map((user) => user.username),
         attendees: attendees.map((user) => user.username),
+        isAttending: userEvent.isAttending,
+        isAdmin: userEvent.isAdmin,
       };
       res.json(eventDetails);
     } else {
