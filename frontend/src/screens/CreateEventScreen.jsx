@@ -1,13 +1,9 @@
 // Add multiple usernames option to form input
 // Form Validation
-// Date must be a future possible value,
-// Available Spaces must be positive number
 
 import { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import FormContainer from '../components/FormContainer';
-// Validation: Successful event creation notification
-
 import { useNavigate } from 'react-router-dom';
 import { useCreateEventMutation } from '../slices/eventsApiSlice';
 import { toast } from 'react-toastify';
@@ -35,6 +31,7 @@ function CreateEventScreen() {
         availableSpaces,
         invitedUsernames,
       }).unwrap();
+      toast.success('Event created successfully');
       navigate('/dashboard');
     } catch (err) {
       toast.error(err?.data?.error || err.error);

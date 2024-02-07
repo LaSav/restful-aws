@@ -1,7 +1,5 @@
-// Validation: successful update notifications
-
 import { useState } from 'react';
-import { Form, Button, Alert } from 'react-bootstrap';
+import { Form, Button, Modal } from 'react-bootstrap';
 import FormContainer from '../components/FormContainer';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -28,6 +26,11 @@ function UpdateEventScreen() {
   const [updateEvent, { isLoading: updateLoading }] = useUpdateEventMutation();
   const [deleteEvent, { isLoading: deleteLoading }] = useDeleteEventMutation();
 
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  const handleShowConfirmModal = () => setShowConfirmModal(true);
+  const handleHideConfirmModal = () => setShowConfirmModal(false);
+
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -44,6 +47,7 @@ function UpdateEventScreen() {
           invitedUsernames: invitedUsernames,
         },
       }).unwrap();
+      toast.success('Event updated successfully');
       navigate(`/events/${eventId}`);
     } catch (err) {
       toast.error(err?.data?.error || err.error);
@@ -51,8 +55,10 @@ function UpdateEventScreen() {
   };
 
   const deleteHandler = async () => {
+    handleHideConfirmModal();
     try {
       await deleteEvent(eventId).unwrap();
+      toast.success('Event deleted successfully');
       navigate('/dashboard');
     } catch (err) {
       toast.error(err?.data?.error || err.error);
@@ -136,12 +142,33 @@ function UpdateEventScreen() {
 
         <Button
           type='button'
-          onClick={deleteHandler}
           variant='danger'
           className='mt-3'
+          onClick={handleShowConfirmModal}
+          disabled={deleteLoading}
         >
           {deleteLoading ? 'Deleting...' : 'Delete Event'}
         </Button>
+
+        {/* Confirm Modal */}
+        <Modal show={showConfirmModal} onHide={handleHideConfirmModal} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Confirm Deletion</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Are you sure you want to delete this event?</Modal.Body>
+          <Modal.Footer>
+            <Button variant='secondary' onClick={handleHideConfirmModal}>
+              Cancel
+            </Button>
+            <Button
+              variant='danger'
+              onClick={deleteHandler}
+              disabled={deleteLoading}
+            >
+              {deleteLoading ? 'Deleting...' : 'Delete'}
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Form>
     </FormContainer>
   );
