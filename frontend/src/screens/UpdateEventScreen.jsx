@@ -1,12 +1,13 @@
 // Validation: successful update notifications
 
 import { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Alert } from 'react-bootstrap';
 import FormContainer from '../components/FormContainer';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   useUpdateEventMutation,
   useFetchEventQuery,
+  useDeleteEventMutation,
 } from '../slices/eventsApiSlice';
 import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
@@ -25,15 +26,7 @@ function UpdateEventScreen() {
 
   const { data: event, isLoading } = useFetchEventQuery(eventId);
   const [updateEvent, { isLoading: updateLoading }] = useUpdateEventMutation();
-
-  useEffect(() => {
-    if (event) {
-      setName(event.name || '');
-      setDescription(event.description || '');
-      setDeadline(event.deadline || '');
-      setAvailableSpaces(event.availableSpaces || '');
-    }
-  }, [event]);
+  const [deleteEvent, { isLoading: deleteLoading }] = useDeleteEventMutation();
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -56,6 +49,24 @@ function UpdateEventScreen() {
       toast.error(err?.data?.error || err.error);
     }
   };
+
+  const deleteHandler = async () => {
+    try {
+      await deleteEvent(eventId).unwrap();
+      navigate('/dashboard');
+    } catch (err) {
+      toast.error(err?.data?.error || err.error);
+    }
+  };
+
+  useEffect(() => {
+    if (event) {
+      setName(event.name || '');
+      setDescription(event.description || '');
+      setDeadline(event.deadline || '');
+      setAvailableSpaces(event.availableSpaces || '');
+    }
+  }, [event]);
 
   if (isLoading || updateLoading) {
     return <Loader />;
@@ -119,8 +130,17 @@ function UpdateEventScreen() {
           ></Form.Control>
         </Form.Group>
 
-        <Button type='submit' variant='primary' className='mt-3'>
+        <Button type='submit' variant='primary' className='mt-3 me-3'>
           Save Changes
+        </Button>
+
+        <Button
+          type='button'
+          onClick={deleteHandler}
+          variant='danger'
+          className='mt-3'
+        >
+          {deleteLoading ? 'Deleting...' : 'Delete Event'}
         </Button>
       </Form>
     </FormContainer>
