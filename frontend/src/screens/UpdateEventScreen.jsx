@@ -1,19 +1,20 @@
-// Add multiple usernames option to form input
-// Form Validation
-// Date must be a future possible value,
-// Available Spaces must be positive number
+// Validation: successful update notifications
 
 import { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import FormContainer from '../components/FormContainer';
-// Validation: Successful event creation notification
-
-import { useNavigate } from 'react-router-dom';
-import { useCreateEventMutation } from '../slices/eventsApiSlice';
+import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useUpdateEventMutation,
+  useFetchEventQuery,
+} from '../slices/eventsApiSlice';
 import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
+import { useEffect } from 'react';
 
-function CreateEventScreen() {
+function UpdateEventScreen() {
+  const { eventId } = useParams();
+
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [deadline, setDeadline] = useState('');
@@ -22,32 +23,47 @@ function CreateEventScreen() {
 
   const navigate = useNavigate();
 
-  const [createEvent, { isLoading }] = useCreateEventMutation();
+  const { data: event, isLoading } = useFetchEventQuery(eventId);
+  const [updateEvent, { isLoading: updateLoading }] = useUpdateEventMutation();
+
+  useEffect(() => {
+    if (event) {
+      setName(event.name || '');
+      setDescription(event.description || '');
+      setDeadline(event.deadline || '');
+      setAvailableSpaces(event.availableSpaces || '');
+    }
+  }, [event]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
+    console.log(name);
+
     try {
-      const res = await createEvent({
-        name,
-        description,
-        deadline,
-        availableSpaces,
-        invitedUsernames,
+      const res = await updateEvent({
+        id: eventId,
+        data: {
+          name: name,
+          description: description,
+          deadline: deadline,
+          availableSpaces: availableSpaces,
+          invitedUsernames: invitedUsernames,
+        },
       }).unwrap();
-      navigate('/dashboard');
+      navigate(`/events/${eventId}`);
     } catch (err) {
       toast.error(err?.data?.error || err.error);
     }
   };
 
-  if (isLoading) {
+  if (isLoading || updateLoading) {
     return <Loader />;
   }
 
   return (
     <FormContainer>
-      <h1>Create an Event</h1>
+      <h1>Edit Event</h1>
       <Form onSubmit={submitHandler}>
         <Form.Group className='my-2' controlId='name'>
           <Form.Label>Name</Form.Label>
@@ -97,7 +113,6 @@ function CreateEventScreen() {
           <Form.Label>Invite Users</Form.Label>
           <Form.Control
             type='text'
-            required
             placeholder='Enter Usernames seperated by a comma: savva,luna,iceberg'
             value={invitedUsernames}
             onChange={(e) => setInvitedUsernames(e.target.value)}
@@ -105,11 +120,11 @@ function CreateEventScreen() {
         </Form.Group>
 
         <Button type='submit' variant='primary' className='mt-3'>
-          Create Event
+          Save Changes
         </Button>
       </Form>
     </FormContainer>
   );
 }
 
-export default CreateEventScreen;
+export default UpdateEventScreen;

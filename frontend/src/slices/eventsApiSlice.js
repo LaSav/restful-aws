@@ -18,6 +18,15 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
     }),
     fetchEvent: builder.query({
       query: (id) => `${EVENTS_URL}/${id}`,
+      providesTags: ['Event'],
+    }),
+    updateEvent: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `${EVENTS_URL}/${id}`,
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: ['Event'],
     }),
   }),
 });
@@ -25,5 +34,6 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
 export const {
   useFetchEventsQuery,
   useCreateEventMutation,
+  useUpdateEventMutation,
   useFetchEventQuery,
 } = eventsApiSlice;

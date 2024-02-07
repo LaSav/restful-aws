@@ -1,4 +1,5 @@
 import { Card, ListGroup, Button } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 function EventDetails({ event }) {
   console.log(event.members);
@@ -30,7 +31,11 @@ function EventDetails({ event }) {
         </ListGroup>
       </Card.Body>
       <div className='d-flex'>
-        {event.isAdmin ? <Button className='me-3'>Edit</Button> : null}
+        {event.isAdmin ? (
+          <LinkContainer to={`/update/${event.id}`}>
+            <Button className='me-3'>Edit</Button>
+          </LinkContainer>
+        ) : null}
         {event.isAttending ? (
           <Button>Un-attend</Button>
         ) : (
