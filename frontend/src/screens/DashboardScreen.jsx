@@ -22,20 +22,19 @@ const DashboardScreen = () => {
   }
 
   return (
-    <Container>
-      <Row>
-        <Col className='pb-4 justify-content-end'>
-          <LinkContainer to='/create'>
-            <Button type='submit' variant='primary' className='mt-3'>
-              Create Event
-            </Button>
-          </LinkContainer>
+    <Container className='pt-5 d-flex justify-content-center'>
+      <Row className='w-100'>
+        <Col>
+          <h3 className='mb-3'>Events you've been invited to</h3>
+          <Stack className='mx-auto' gap={3}>
+            <h4>Date Sort</h4>
+            {eventsList}
+          </Stack>
         </Col>
-      </Row>
-      <Row>
-        <Stack className='mx-auto' gap={3}>
-          {eventsList}
-        </Stack>
+        <Col>
+          <h3 className='mb-3'>Events you're going to</h3>
+          <h4>Date Sort</h4>
+        </Col>
       </Row>
     </Container>
   );

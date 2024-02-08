@@ -43,7 +43,7 @@ function CreateEventScreen() {
   }
 
   return (
-    <FormContainer>
+    <FormContainer className='pt-5'>
       <h1>Create an Event</h1>
       <Form onSubmit={submitHandler}>
         <Form.Group className='my-2' controlId='name'>

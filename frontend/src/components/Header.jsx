@@ -28,7 +28,13 @@ const Header = () => {
 
   return (
     <header>
-      <Navbar bg='dark' variant='dark' expand='lg' collapseOnSelect>
+      <Navbar
+        data-bs-theme='light'
+        bg='light'
+        fixed='top'
+        expand='lg'
+        collapseOnSelect
+      >
         <Container>
           <LinkContainer to='/dashboard'>
             <Navbar.Brand>Fill App</Navbar.Brand>
@@ -38,9 +44,18 @@ const Header = () => {
             <Nav className='ms-auto'>
               {userInfo ? (
                 <>
+                  <LinkContainer to='/create'>
+                    <Nav.Link>Create Event</Nav.Link>
+                  </LinkContainer>
+                  <LinkContainer to='/dashboard'>
+                    <Nav.Link>Dashboard</Nav.Link>
+                  </LinkContainer>
                   <NavDropdown title={userInfo.username} id='username'>
-                    <LinkContainer to='/dashboard'>
-                      <NavDropdown.Item>Dashboard</NavDropdown.Item>
+                    <LinkContainer to='/profile'>
+                      <NavDropdown.Item>Profile</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to='/settings'>
+                      <NavDropdown.Item>Settings</NavDropdown.Item>
                     </LinkContainer>
                     <NavDropdown.Item onClick={logoutHandler}>
                       Logout
