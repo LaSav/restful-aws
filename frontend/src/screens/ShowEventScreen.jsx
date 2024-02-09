@@ -22,11 +22,7 @@ function ShowEventScreen() {
     eventDetails = <EventDetails event={event} />;
   }
 
-  return (
-    <Container className='d-flex justify-content-center pt-5'>
-      {eventDetails}
-    </Container>
-  );
+  return <Container>{eventDetails}</Container>;
 }
 
 export default ShowEventScreen;

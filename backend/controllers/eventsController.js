@@ -51,6 +51,7 @@ const getEvent = async (req, res) => {
         name: event.name,
         description: event.description,
         deadline: event.deadline,
+        totalSpaces: event.totalSpaces,
         availableSpaces: event.availableSpaces,
         admin: admin.username,
         members: eventUsers.map((user) => user.username),
@@ -106,10 +107,12 @@ const createEvent = async (req, res) => {
         .json({ error: 'Availabile spaces must be greater than 0' });
     }
 
+    // Set total spaces as initial available spaces for reference
     const newEvent = await Event.create({
       name: name,
       description: description,
       deadline: deadline,
+      totalSpaces: availableSpaces,
       availableSpaces: availableSpaces,
       adminId: userId,
     });
@@ -119,7 +122,14 @@ const createEvent = async (req, res) => {
       through: { isAdmin: true, isAttending: true },
     });
 
+    // Decrease available spaces by 1
+    await newEvent.increment('availableSpaces', { by: -1 });
+
+    // let invitedUsernamesArray = [];
+
+    // if (invitedUsernames) {
     const invitedUsernamesArray = invitedUsernames.split(',');
+    // }
 
     // Adds invited Users from request body to userEvents junction table
     if (invitedUsernamesArray && invitedUsernamesArray.length > 0) {
@@ -151,6 +161,13 @@ const attendEvent = async (req, res) => {
       { isAttending: true },
       { where: { userId: user.id, eventId: event.id } }
     );
+
+    if (event.availableSpaces > 0) {
+      await event.increment('availableSpaces', { by: -1 });
+    } else {
+      res.status(400).json({ error: 'This event has been filled.' });
+    }
+
     res.status(201).json({
       message: `You've been marked as attending this event for ${event.deadline}`,
       updatedEvent: {

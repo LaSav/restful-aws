@@ -14,7 +14,7 @@ function CreateEventScreen() {
   const [description, setDescription] = useState('');
   const [deadline, setDeadline] = useState('');
   const [availableSpaces, setAvailableSpaces] = useState('');
-  const [invitedUsernames, setInvitedUsernames] = useState([]);
+  const [invitedUsernames, setInvitedUsernames] = useState('');
 
   const navigate = useNavigate();
 
@@ -94,7 +94,6 @@ function CreateEventScreen() {
           <Form.Label>Invite Users</Form.Label>
           <Form.Control
             type='text'
-            required
             placeholder='Enter Usernames seperated by a comma: savva,luna,iceberg'
             value={invitedUsernames}
             onChange={(e) => setInvitedUsernames(e.target.value)}

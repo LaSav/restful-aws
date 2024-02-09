@@ -23,17 +23,19 @@ const DashboardScreen = () => {
 
   return (
     <Container className='pt-5 d-flex justify-content-center'>
-      <Row className='w-100'>
+      <Row>
         <Col>
-          <h3 className='mb-3'>Events you've been invited to</h3>
-          <Stack className='mx-auto' gap={3}>
-            <h4>Date Sort</h4>
-            {eventsList}
-          </Stack>
-        </Col>
-        <Col>
-          <h3 className='mb-3'>Events you're going to</h3>
-          <h4>Date Sort</h4>
+          {events?.length > 0 ? (
+            <>
+              <h3 className='mb-3'>Events you've been invited to</h3>
+              <Stack className='mx-auto' gap={3}>
+                <h4>Date Sort</h4>
+                {eventsList}
+              </Stack>
+            </>
+          ) : (
+            <h1>You aren't in any events yet.</h1>
+          )}
         </Col>
       </Row>
     </Container>

@@ -1,24 +1,33 @@
-import { Card, ListGroup } from 'react-bootstrap';
+import { Col, Badge, Stack } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 function EventItem({ event }) {
   return (
-    <LinkContainer to={`/events/${event.id}`}>
-      <Card>
-        <Card.Body>
-          <Card.Title>{event.name}</Card.Title>
-          <Card.Subtitle>{event.deadline}</Card.Subtitle>
-          <Card.Text>{event.description}</Card.Text>
-          <ListGroup horizontal>
-            <ListGroup.Item>
-              {event.userEvents.isAdmin ? <p>Admin</p> : null}
-            </ListGroup.Item>
-            <ListGroup.Item>
-              {event.userEvents.isAdttending ? <p>Attending</p> : null}
-            </ListGroup.Item>
-          </ListGroup>
-        </Card.Body>
-      </Card>
+    <LinkContainer
+      style={{
+        borderLeft: 'solid #8CDEE8 5px',
+        borderRadius: '12px',
+        backgroundColor: 'white',
+      }}
+      to={`/events/${event.id}`}
+    >
+      <Col className='my-2 p-3'>
+        <h3>{event.name}</h3>
+        <h5>{event.deadline}</h5>
+        <h5>Available Spaces: {event.availableSpaces}</h5>
+        <Stack direction='horizontal' className='justify-content-end' gap={2}>
+          {event.userEvents.isAdmin ? (
+            <Badge pill bg='info'>
+              Admin
+            </Badge>
+          ) : null}
+          {event.userEvents.isAttending ? (
+            <Badge pill bg='info'>
+              Attending
+            </Badge>
+          ) : null}
+        </Stack>
+      </Col>
     </LinkContainer>
   );
 }

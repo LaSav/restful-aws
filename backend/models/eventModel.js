@@ -17,6 +17,9 @@ const Event = sequelize.define('event', {
   deadline: {
     type: DataTypes.DATEONLY,
   },
+  totalSpaces: {
+    type: DataTypes.INTEGER,
+  },
   availableSpaces: {
     type: DataTypes.INTEGER,
   },
