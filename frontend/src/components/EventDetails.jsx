@@ -43,11 +43,11 @@ function EventDetails({ event }) {
     //   </div>
     // </Card>
     <Col className='my-2 p-3'>
-      <h1>{event.name}</h1>
-      <h2>{event.deadline}</h2>
-      <h4>Total Spaces: {event.totalSpaces}</h4>
-      <h4>Spaces left: {event.availableSpaces}</h4>
-      <h4>{event.description}</h4>
+      <h3>{event.name}</h3>
+      <h4>{event.deadline}</h4>
+      <h5>Total Spaces: {event.totalSpaces}</h5>
+      <h5>Spaces left: {event.availableSpaces}</h5>
+      <h5>{event.description}</h5>
       <Stack direction='horizontal' gap={2}>
         {event.isAdmin ? (
           <Badge pill bg='info'>
@@ -68,7 +68,6 @@ function EventDetails({ event }) {
         <h3>Members</h3>
         {membersList}
       </Stack>
-      {event.isAttending ? <Button>Un-attend</Button> : <Button>Attend</Button>}
     </Col>
   );
 }

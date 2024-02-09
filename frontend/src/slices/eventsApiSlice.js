@@ -35,6 +35,13 @@ export const eventsApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Events'],
     }),
+    attendEvent: builder.mutation({
+      query: (id) => ({
+        url: `${EVENTS_URL}/${id}/attend`,
+        method: 'PUT',
+      }),
+      invalidatesTags: ['Event', 'Events'],
+    }),
   }),
 });
 
@@ -44,4 +51,5 @@ export const {
   useUpdateEventMutation,
   useFetchEventQuery,
   useDeleteEventMutation,
+  useAttendEventMutation,
 } = eventsApiSlice;

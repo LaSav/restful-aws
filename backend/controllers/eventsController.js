@@ -125,11 +125,7 @@ const createEvent = async (req, res) => {
     // Decrease available spaces by 1
     await newEvent.increment('availableSpaces', { by: -1 });
 
-    // let invitedUsernamesArray = [];
-
-    // if (invitedUsernames) {
     const invitedUsernamesArray = invitedUsernames.split(',');
-    // }
 
     // Adds invited Users from request body to userEvents junction table
     if (invitedUsernamesArray && invitedUsernamesArray.length > 0) {

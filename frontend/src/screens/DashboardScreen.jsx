@@ -22,14 +22,13 @@ const DashboardScreen = () => {
   }
 
   return (
-    <Container className='pt-5 d-flex justify-content-center'>
-      <Row>
-        <Col>
+    <Container fluid className='pt-5'>
+      <Row className='d-flex justify-content-center'>
+        <Col md={4}>
           {events?.length > 0 ? (
             <>
-              <h3 className='mb-3'>Events you've been invited to</h3>
+              <h3 className='mb-3'>Your Events</h3>
               <Stack className='mx-auto' gap={3}>
-                <h4>Date Sort</h4>
                 {eventsList}
               </Stack>
             </>

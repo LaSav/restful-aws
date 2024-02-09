@@ -12,9 +12,9 @@ function EventItem({ event }) {
       to={`/events/${event.id}`}
     >
       <Col className='my-2 p-3'>
-        <h3>{event.name}</h3>
-        <h5>{event.deadline}</h5>
-        <h5>Available Spaces: {event.availableSpaces}</h5>
+        <h6>{event.name}</h6>
+        <h6>{event.deadline}</h6>
+        <h6>Available Spaces: {event.availableSpaces}</h6>
         <Stack direction='horizontal' className='justify-content-end' gap={2}>
           {event.userEvents.isAdmin ? (
             <Badge pill bg='info'>
