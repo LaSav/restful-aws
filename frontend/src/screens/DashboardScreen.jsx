@@ -1,6 +1,4 @@
-import { Button, Container, Row, Col, Stack } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
-import { toast } from 'react-toastify';
+import { Container, Row, Col, Stack } from 'react-bootstrap';
 import Loader from '../components/Loader';
 import { useFetchEventsQuery } from '../slices/eventsApiSlice';
 import EventItem from '../components/EventItem';
