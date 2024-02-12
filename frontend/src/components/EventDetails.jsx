@@ -1,7 +1,6 @@
 import { Col, Badge, Stack, Button } from 'react-bootstrap';
 
 function EventDetails({ event }) {
-  console.log(event.members);
   const attendeesList = event.attendees.map((attendee, i) => {
     return <p key={i}>{attendee}</p>;
   });

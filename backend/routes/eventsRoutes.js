@@ -4,6 +4,7 @@ const {
   getEvent,
   createEvent,
   attendEvent,
+  leaveEvent,
   adminUpdateEvent,
   deleteEvent,
   inviteUsersToEvent,
@@ -22,6 +23,7 @@ router
   .delete(protect, deleteEvent);
 
 router.route('/:id/attend').put(protect, attendEvent);
+router.route('/:id/leave').delete(protect, leaveEvent);
 router.route('/:id/invite').put(protect, inviteUsersToEvent);
 
 module.exports = router;

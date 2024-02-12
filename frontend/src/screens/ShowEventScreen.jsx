@@ -10,6 +10,7 @@ import {
 import Loader from '../components/Loader';
 import EventDetails from '../components/EventDetails';
 import { Container, Button } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 function ShowEventScreen() {
   const { eventId } = useParams();
@@ -40,10 +41,17 @@ function ShowEventScreen() {
     <Container>
       {eventDetails}
       {event.isAttending ? (
-        <Button>Un-attend</Button>
+        <Button className='me-3'>Un-attend</Button>
       ) : (
-        <Button onClick={attendHandler}>Attend</Button>
+        <Button className='me-3' onClick={attendHandler}>
+          Attend
+        </Button>
       )}
+      {event.isAdmin ? (
+        <LinkContainer to={`/update/${event.id}`}>
+          <Button>Edit</Button>
+        </LinkContainer>
+      ) : null}
     </Container>
   );
 }

@@ -177,6 +177,34 @@ const attendEvent = async (req, res) => {
   }
 };
 
+// @desc Leave an event
+// @route DELETE /api/events/:id/leave
+// @access Private
+
+const leaveEvent = async (req, res) => {
+  const userId = req.user.id;
+  try {
+    const event = await Event.findByPk(req.params.id);
+    const user = await User.findByPk(userId);
+    if (!user || !event) {
+      return res.status(404).json({ error: 'User or event not found' });
+    }
+    const result = await UserEvents.destroy({
+      where: { EventId: event.id, UserId: userId },
+    });
+    if (result > 0) {
+      res
+        .status(200)
+        .json({ message: 'User removed from the event successfully.' });
+    } else {
+      res.status(404).json({ message: 'User was not part of the event.' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 // -- ADMIN FUNCTIONS --
 
 // @desc Admin Update Event
@@ -278,6 +306,7 @@ module.exports = {
   getEvent,
   createEvent,
   attendEvent,
+  leaveEvent,
   inviteUsersToEvent,
   adminUpdateEvent,
   deleteEvent,
