@@ -1,6 +1,16 @@
-import { Col, Badge, Stack, Button } from 'react-bootstrap';
+// Create components for 'spaces left', 'total spaces', buttons, date and list of members and attendees
+import { Col, Badge, Stack, Row, Button } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import {
+  useAttendEventMutation,
+  useLeaveEventMutation,
+} from '../slices/eventsApiSlice';
+import { toast } from 'react-toastify';
 
 function EventDetails({ event }) {
+  const navigate = useNavigate();
+
   const attendeesList = event.attendees.map((attendee, i) => {
     return <p key={i}>{attendee}</p>;
   });
@@ -9,65 +19,96 @@ function EventDetails({ event }) {
     return <p key={i}>{member}</p>;
   });
 
+  const [attendEvent, { isLoading: attendEventLoading }] =
+    useAttendEventMutation(event.id);
+  const [leaveEvent, { isLoading: leaveEventLoading }] = useLeaveEventMutation(
+    event.id
+  );
+
+  const attendHandler = async () => {
+    try {
+      await attendEvent(event.id).unwrap();
+      toast.success(`You are set to attend ${event.name} on ${event.deadline}`);
+    } catch (err) {
+      toast.error(err?.data?.error || err.error);
+    }
+  };
+
+  const leaveHandler = async () => {
+    try {
+      await leaveEvent(event.id).unwrap();
+      toast.success(`You have left ${event.name}`);
+      navigate('/dashboard');
+    } catch (err) {
+      toast.error(err?.data?.error || err.error);
+    }
+  };
+
   return (
-    // <Card className='d-flex bg-light w-50 align-items-center py-4'>
-    //   <Card.Body>
-    //     <Card.Title>{event.name}</Card.Title>
-    //     <Card.Subtitle>Deadline: {event.deadline}</Card.Subtitle>
-    //     <Card.Text>{event.description}</Card.Text>
-    //     <Card.Text>Total Spaces: {event.availableSpaces}</Card.Text>
-    //     <Card.Text>
-    //       Spaces left: {event.availableSpaces - event.attendees.length}
-    //     </Card.Text>
-    //     <ListGroup className='py-3'>
-    //       <ListGroup.Item>Attending:</ListGroup.Item>
-    //       {attendeesList}
-    //     </ListGroup>
-    //     <ListGroup>
-    //       <ListGroup.Item>Members:</ListGroup.Item>
-    //       {membersList}
-    //     </ListGroup>
-    //   </Card.Body>
-    //   <div className='d-flex'>
-    //     {event.isAdmin ? (
-    //       <LinkContainer to={`/update/${event.id}`}>
-    //         <Button className='me-3'>Edit</Button>
-    //       </LinkContainer>
-    //     ) : null}
-    //     {event.isAttending ? (
-    //       <Button>Un-attend</Button>
-    //     ) : (
-    //       <Button>Attend</Button>
-    //     )}
-    //   </div>
-    // </Card>
-    <Col className='my-2 p-3'>
-      <h3>{event.name}</h3>
-      <h4>{event.deadline}</h4>
-      <h5>Total Spaces: {event.totalSpaces}</h5>
-      <h5>Spaces left: {event.availableSpaces}</h5>
-      <h5>{event.description}</h5>
-      <Stack direction='horizontal' gap={2}>
-        {event.isAdmin ? (
-          <Badge pill bg='info'>
-            Admin
-          </Badge>
-        ) : null}
-        {event.isAttending ? (
-          <Badge pill bg='info'>
-            Attending
-          </Badge>
-        ) : null}
-      </Stack>
-      <Stack gap={2}>
-        <h3>Going</h3>
-        {attendeesList}
-      </Stack>
-      <Stack gap={2}>
-        <h3>Members</h3>
-        {membersList}
-      </Stack>
-    </Col>
+    <>
+      <Row>
+        <Col className='my-2'>
+          <Stack direction='horizontal' gap={3}>
+            <h3>{event.name}</h3>
+            {event.isAdmin ? (
+              <LinkContainer to={`/update/${event.id}`}>
+                <Button variant='outline-primary' className='me-3'>
+                  Edit
+                </Button>
+              </LinkContainer>
+            ) : null}
+          </Stack>
+          <Stack direction='horizontal' gap={2}>
+            {event.isAdmin ? (
+              <Badge pill bg='info'>
+                Admin
+              </Badge>
+            ) : null}
+            {event.isAttending ? (
+              <Badge pill bg='info'>
+                Attending
+              </Badge>
+            ) : null}
+          </Stack>
+          <h5>{event.description}</h5>
+          <Stack direction='horizontal' gap={2}>
+            <h5>Total Spaces: {event.totalSpaces}</h5>
+            <h5>Spaces left: {event.availableSpaces}</h5>
+          </Stack>
+        </Col>
+        <Col className='my-2'>
+          <h4>{event.deadline}</h4>
+          <Stack direction='horizontal'>
+            <Stack gap={2}>
+              <h5>Going</h5>
+              {attendeesList}
+            </Stack>
+            <Stack gap={2}>
+              <h5>Members</h5>
+              {membersList}
+            </Stack>
+          </Stack>
+          <Stack direction='horizontal' gap={3}>
+            {event.isAttending ? (
+              <Button variant='outline-warning' className='me-3'>
+                Un-attend
+              </Button>
+            ) : (
+              <Button className='me-3' onClick={attendHandler}>
+                Attend
+              </Button>
+            )}
+            <Button
+              variant='outline-danger'
+              className='me-3'
+              onClick={leaveHandler}
+            >
+              Leave Event
+            </Button>
+          </Stack>
+        </Col>
+      </Row>
+    </>
   );
 }
 

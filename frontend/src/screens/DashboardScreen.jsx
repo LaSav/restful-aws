@@ -4,8 +4,6 @@ import { useFetchEventsQuery } from '../slices/eventsApiSlice';
 import EventItem from '../components/EventItem';
 
 const DashboardScreen = () => {
-  console.log('Dashboard screen rendering');
-
   const { data: events, error, isLoading } = useFetchEventsQuery();
 
   let eventsList;
