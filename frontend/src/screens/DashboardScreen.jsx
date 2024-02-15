@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { Container, Row, Col, Stack } from 'react-bootstrap';
 import Loader from '../components/Loader';
@@ -8,11 +8,14 @@ import { setEvents } from '../slices/eventsSlice';
 
 const DashboardScreen = () => {
   const dispatch = useDispatch();
-  const { data: events, error, isLoading } = useFetchEventsQuery();
+  const { data: eventsData, error, isLoading } = useFetchEventsQuery();
+
+  // Using Redux State incase I don't want to re-fetch data in the future
+  const events = useSelector((state) => state.events.allEvents);
 
   useEffect(() => {
-    if (events && !isLoading && !error) {
-      dispatch(setEvents(events));
+    if (eventsData && !isLoading && !error) {
+      dispatch(setEvents(eventsData));
     }
   }, [events, isLoading, error, dispatch]);
 

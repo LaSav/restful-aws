@@ -1,4 +1,6 @@
-// edit button placement
+// 'edit' button placement
+// Fix variable width of columns
+
 import { Col, Badge, Stack, Row, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useNavigate } from 'react-router-dom';

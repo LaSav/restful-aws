@@ -26,4 +26,8 @@ Making this so my friends and I can schedule a full Diplomacy game.
 - Profile pictures
 - Add location
 
+## Considerations and future Optimizations
+
+Currently I am re-fetching data on the client upon successful mutations. Future data persistence using redux state will be considered if refetching the data server side proves to be optimal. Or if I can figure out how to send back the appropriate data.
+
 ## Bugs:

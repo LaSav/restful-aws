@@ -2,7 +2,6 @@ const User = require('../models/userModel');
 
 const getEventsForUser = async (userId) => {
   try {
-    console.log(userId);
     const user = await User.findByPk(userId);
 
     if (!user) {

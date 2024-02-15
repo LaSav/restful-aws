@@ -12,10 +12,12 @@ const eventsSlice = createSlice({
     setEvents: (state, action) => {
       state.allEvents = action.payload;
     },
-    addEvent: (state, action) => {},
+    addEvent: (state, action) => {
+      state.allEvents = [...state.allEvents, action.payload];
+    },
   },
 });
 
-export const { setEvents } = eventsSlice.actions;
+export const { setEvents, addEvent } = eventsSlice.actions;
 
 export default eventsSlice.reducer;

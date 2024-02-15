@@ -83,6 +83,7 @@ const createEvent = async (req, res) => {
 
   try {
     const user = await User.findByPk(userId);
+    console.log(user.__proto__);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
