@@ -47,7 +47,7 @@ function EventDetails({ event }) {
   return (
     <>
       <Row>
-        <Col xs={7} className='my-2'>
+        <Col sm={7} className='my-2'>
           <div
             className='py-4 px-3'
             style={{
@@ -82,8 +82,11 @@ function EventDetails({ event }) {
               </LinkContainer>
             ) : null}
           </div>
-          <Stack className='my-5' direction='horizontal'>
-            <Stack>
+          <Stack className='my-3' direction='horizontal' gap={2}>
+            <Stack
+              className='py-3'
+              style={{ backgroundColor: '#fafafa', borderRadius: '10px' }}
+            >
               <h5 className='text-center'>
                 Going <Badge pill>{attendeesList.length}</Badge>
               </h5>
@@ -91,7 +94,10 @@ function EventDetails({ event }) {
                 {attendeesList}
               </ul>
             </Stack>
-            <Stack>
+            <Stack
+              className='py-3'
+              style={{ backgroundColor: '#fafafa', borderRadius: '10px' }}
+            >
               <h5 className='text-center'>
                 Invited <Badge pill>{membersList.length}</Badge>
               </h5>
@@ -101,7 +107,7 @@ function EventDetails({ event }) {
             </Stack>
           </Stack>
         </Col>
-        <Col xs={5} className='my-2'>
+        <Col sm={5} className='my-2'>
           <Stack className='my-5 text-center' direction='horizontal'>
             <Stack>
               <h5>Total Spaces</h5>

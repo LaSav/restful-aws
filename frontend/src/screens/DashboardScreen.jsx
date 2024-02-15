@@ -1,10 +1,20 @@
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 import { Container, Row, Col, Stack } from 'react-bootstrap';
 import Loader from '../components/Loader';
 import { useFetchEventsQuery } from '../slices/eventsApiSlice';
 import EventItem from '../components/EventItem';
+import { setEvents } from '../slices/eventsSlice';
 
 const DashboardScreen = () => {
+  const dispatch = useDispatch();
   const { data: events, error, isLoading } = useFetchEventsQuery();
+
+  useEffect(() => {
+    if (events && !isLoading && !error) {
+      dispatch(setEvents(events));
+    }
+  }, [events, isLoading, error, dispatch]);
 
   let eventsList;
   if (isLoading) {
