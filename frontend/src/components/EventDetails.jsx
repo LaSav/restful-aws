@@ -1,5 +1,5 @@
 // 'edit' button placement
-// Fix variable width of columns
+// independant height growth on members stacks
 
 import { Col, Badge, Stack, Row, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
@@ -8,6 +8,7 @@ import {
   useAttendEventMutation,
   useLeaveEventMutation,
 } from '../slices/eventsApiSlice';
+import AddFriendsForm from './AddFriendsForm';
 import { toast } from 'react-toastify';
 
 function EventDetails({ event }) {
@@ -48,17 +49,22 @@ function EventDetails({ event }) {
 
   return (
     <>
-      <Row>
-        <Col sm={7} className='my-2'>
+      <Row className='px-xs-5'>
+        <Col md={7} className='my-2'>
+          {event.isAttending ? (
+            <h2>You're all set for</h2>
+          ) : (
+            <h2>You're invited to</h2>
+          )}
           <div
-            className='py-4 px-3'
+            className='p-4'
             style={{
               backgroundColor: '#fafafa',
               borderRadius: '10px',
             }}
           >
             <h2>{event.deadline}</h2>
-            <h3>{event.name}</h3>
+            <h1>{event.name}</h1>
             <Stack direction='horizontal' gap={2}>
               {event.isAdmin ? (
                 <h5>
@@ -84,7 +90,7 @@ function EventDetails({ event }) {
               </LinkContainer>
             ) : null}
           </div>
-          <Stack className='my-3' direction='horizontal' gap={2}>
+          <Stack className='my-3' direction='horizontal' gap={3}>
             <Stack
               className='py-3'
               style={{ backgroundColor: '#fafafa', borderRadius: '10px' }}
@@ -109,35 +115,46 @@ function EventDetails({ event }) {
             </Stack>
           </Stack>
         </Col>
-        <Col sm={5} className='my-2'>
-          <Stack className='my-5 text-center' direction='horizontal'>
-            <Stack>
-              <h5>Total Spaces</h5>
-              <h4>
-                <Badge pill>{event.totalSpaces}</Badge>
-              </h4>
+        <Col md={5} className='my-2'>
+          <div>
+            <Stack
+              direction='horizontal'
+              className='mb-4 justify-content-center'
+            >
+              {event.isAdmin ? <AddFriendsForm /> : null}
             </Stack>
-            <Stack>
-              <h5>Spaces Left</h5>
-              <h4>
-                <Badge pill>{event.availableSpaces}</Badge>
-              </h4>
+            <Stack
+              className='justify-content-center my-4 text-center'
+              direction='horizontal'
+            >
+              <Stack>
+                <h5>Total Spaces</h5>
+                <h4>
+                  <Badge pill>{event.totalSpaces}</Badge>
+                </h4>
+              </Stack>
+              <Stack>
+                <h5>Spaces Left</h5>
+                <h4>
+                  <Badge pill>{event.availableSpaces}</Badge>
+                </h4>
+              </Stack>
             </Stack>
-          </Stack>
-          <Stack className='col-md-8 mx-auto' gap={2}>
-            {event.isAttending ? (
-              <Button variant='warning' className='me-3'>
-                Un-attend
+            <Stack className='col-5 mx-auto' gap={2}>
+              {event.isAttending ? (
+                <Button variant='warning' className='me-3'>
+                  Un-attend
+                </Button>
+              ) : (
+                <Button className='me-3' onClick={attendHandler}>
+                  Attend
+                </Button>
+              )}
+              <Button variant='danger' className='me-3' onClick={leaveHandler}>
+                Leave Event
               </Button>
-            ) : (
-              <Button className='me-3' onClick={attendHandler}>
-                Attend
-              </Button>
-            )}
-            <Button variant='danger' className='me-3' onClick={leaveHandler}>
-              Leave Event
-            </Button>
-          </Stack>
+            </Stack>
+          </div>
         </Col>
       </Row>
     </>
