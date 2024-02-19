@@ -33,3 +33,8 @@ Currently I am re-fetching data on the client upon successful mutations. Future 
 ## Bugs:
 
 - Nav link stays highlighted when on another page.
+
+## TODO:
+
+- Change to SQLite
+- Containerization
