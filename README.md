@@ -38,3 +38,4 @@ Currently I am re-fetching data on the client upon successful mutations. Future 
 
 - Change to SQLite
 - Containerization
+- CORS
