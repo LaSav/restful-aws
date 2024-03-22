@@ -33,9 +33,10 @@ Currently I am re-fetching data on the client upon successful mutations. Future 
 ## Bugs:
 
 - Nav link stays highlighted when on another page.
+- Refresh token or expiration handling for JWT.
 
 ## TODO:
 
-- Change to SQLite
-- Containerization
-- CORS
+1. CORS
+2. Containerization
+3. CI/CD

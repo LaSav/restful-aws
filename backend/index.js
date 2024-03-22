@@ -3,6 +3,7 @@ const { errorHandler } = require('./middleware/errorMiddleware');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const sequelize = require('./config/db');
+const cors = require('cors');
 
 require('./models/userModel');
 require('./models/eventModel');
@@ -13,6 +14,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors());
 
 console.log(sequelize.models);
 
