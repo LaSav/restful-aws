@@ -4,6 +4,33 @@ A fullstack web application using Node, MySQL, React, EC2 & RDS.
 
 Making this so my friends and I can schedule a full Diplomacy game.
 
+## Running this App Locally:
+
+`git clone https://github.com/LaSav/restful-aws`
+
+### Add environment variables:
+
+In root .env file:
+
+```
+MYSQL_USERNAME = username for MySQL database
+MYSQL_DATABASE = Name of the MySQL database
+MYSQL_PASSWORD = Password for the MySQL database user
+MYSQL_ROOT_PASSWORD = Root password for MySQL database
+JWT_SECRET = Secret key for JWT authentication
+```
+
+### Run with NPM
+
+Install dependencies: `npm install`
+Run Server: `npm run server`
+Run Client: `npm run client`
+
+### Run with Docker
+
+Build the docker images: `docker-compose build`
+Start the docker containers: `docker-compose up`
+
 ## Users can:
 
 - Create an Event
@@ -37,6 +64,5 @@ Currently I am re-fetching data on the client upon successful mutations. Future 
 
 ## TODO:
 
-1. CORS
-2. Containerization
-3. CI/CD
+1. Add 'Cancel' on edit event page
+2. CI/CD
