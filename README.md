@@ -64,5 +64,6 @@ Currently I am re-fetching data on the client upon successful mutations. Future 
 
 ## TODO:
 
-1. Add 'Cancel' on edit event page
-2. CI/CD
+- Fix undefined user on docker start. Only errors when you remain logged in and stop the containers.
+- Add 'Cancel' on edit event page
+- CI/CD
